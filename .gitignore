@@ -1,0 +1,7 @@
+# 项目排除路径
+/src/router/index.js
+/src/router/index.js.map
+/src/utils/request.js
+/src/utils/request.js.map
+/src/main.js
+/src/main.js.map
