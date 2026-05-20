@@ -2,10 +2,10 @@
 /// <reference types="E:/project/StudyRoom/admin-frontend/node_modules/@vue/language-core/types/props-fallback.d.ts" />
 import { computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { SwitchButton } from '@element-plus/icons-vue';
 import { ElMessageBox } from 'element-plus';
 const router = useRouter();
 const route = useRoute();
-// 提取我们在路由中配的主业务
 const adminRoutes = computed(() => {
     const root = router.options.routes.find(r => r.path === '/');
     return root?.children || [];
@@ -14,8 +14,10 @@ const activeMenu = computed(() => route.path);
 const currentTitle = computed(() => route.meta.title || '');
 const handleCommand = (command) => {
     if (command === 'logout') {
-        ElMessageBox.confirm('确定要退出自习室管理平台底座吗?', '防误触', {
-            type: 'warning'
+        ElMessageBox.confirm('确定要退出管理后台吗？', '提示', {
+            type: 'warning',
+            confirmButtonText: '退出',
+            cancelButtonText: '取消'
         }).then(() => {
             localStorage.removeItem('adminToken');
             router.push('/login');
@@ -29,6 +31,8 @@ const __VLS_ctx = {
 let __VLS_components;
 let __VLS_intrinsics;
 let __VLS_directives;
+/** @type {__VLS_StyleScopedClasses['menu-item']} */ ;
+/** @type {__VLS_StyleScopedClasses['menu-item']} */ ;
 let __VLS_0;
 /** @ts-ignore @type {typeof __VLS_components.elContainer | typeof __VLS_components.ElContainer | typeof __VLS_components.elContainer | typeof __VLS_components.ElContainer} */
 elContainer;
@@ -47,40 +51,56 @@ let __VLS_7;
 elAside;
 // @ts-ignore
 const __VLS_8 = __VLS_asFunctionalComponent1(__VLS_7, new __VLS_7({
-    width: "220px",
+    width: "240px",
     ...{ class: "aside" },
 }));
 const __VLS_9 = __VLS_8({
-    width: "220px",
+    width: "240px",
     ...{ class: "aside" },
 }, ...__VLS_functionalComponentArgsRest(__VLS_8));
 /** @type {__VLS_StyleScopedClasses['aside']} */ ;
 const { default: __VLS_12 } = __VLS_10.slots;
 __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "logo" },
+    ...{ class: "logo-area" },
 });
-/** @type {__VLS_StyleScopedClasses['logo']} */ ;
+/** @type {__VLS_StyleScopedClasses['logo-area']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "logo-icon" },
+});
+/** @type {__VLS_StyleScopedClasses['logo-icon']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "logo-text" },
+});
+/** @type {__VLS_StyleScopedClasses['logo-text']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "logo-title" },
+});
+/** @type {__VLS_StyleScopedClasses['logo-title']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "logo-sub" },
+});
+/** @type {__VLS_StyleScopedClasses['logo-sub']} */ ;
 let __VLS_13;
 /** @ts-ignore @type {typeof __VLS_components.elMenu | typeof __VLS_components.ElMenu | typeof __VLS_components.elMenu | typeof __VLS_components.ElMenu} */
 elMenu;
 // @ts-ignore
 const __VLS_14 = __VLS_asFunctionalComponent1(__VLS_13, new __VLS_13({
     defaultActive: (__VLS_ctx.activeMenu),
-    ...{ class: "el-menu-vertical" },
-    backgroundColor: "#304156",
-    textColor: "#bfcbd9",
-    activeTextColor: "#409eff",
+    ...{ class: "side-menu" },
+    backgroundColor: "transparent",
+    textColor: "rgba(255,255,255,0.65)",
+    activeTextColor: "#ffffff",
     router: true,
 }));
 const __VLS_15 = __VLS_14({
     defaultActive: (__VLS_ctx.activeMenu),
-    ...{ class: "el-menu-vertical" },
-    backgroundColor: "#304156",
-    textColor: "#bfcbd9",
-    activeTextColor: "#409eff",
+    ...{ class: "side-menu" },
+    backgroundColor: "transparent",
+    textColor: "rgba(255,255,255,0.65)",
+    activeTextColor: "#ffffff",
     router: true,
 }, ...__VLS_functionalComponentArgsRest(__VLS_14));
-/** @type {__VLS_StyleScopedClasses['el-menu-vertical']} */ ;
+/** @type {__VLS_StyleScopedClasses['side-menu']} */ ;
 const { default: __VLS_18 } = __VLS_16.slots;
 for (const [route] of __VLS_vFor((__VLS_ctx.adminRoutes))) {
     let __VLS_19;
@@ -90,11 +110,14 @@ for (const [route] of __VLS_vFor((__VLS_ctx.adminRoutes))) {
     const __VLS_20 = __VLS_asFunctionalComponent1(__VLS_19, new __VLS_19({
         key: (route.path),
         index: ('/' + route.path),
+        ...{ class: "menu-item" },
     }));
     const __VLS_21 = __VLS_20({
         key: (route.path),
         index: ('/' + route.path),
+        ...{ class: "menu-item" },
     }, ...__VLS_functionalComponentArgsRest(__VLS_20));
+    /** @type {__VLS_StyleScopedClasses['menu-item']} */ ;
     const { default: __VLS_24 } = __VLS_22.slots;
     let __VLS_25;
     /** @ts-ignore @type {typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon | typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon} */
@@ -147,11 +170,27 @@ __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
     ...{ class: "header-left" },
 });
 /** @type {__VLS_StyleScopedClasses['header-left']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.span, __VLS_intrinsics.span)({
+    ...{ class: "breadcrumb-icon" },
+});
+/** @type {__VLS_StyleScopedClasses['breadcrumb-icon']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.span, __VLS_intrinsics.span)({
+    ...{ class: "page-title" },
+});
+/** @type {__VLS_StyleScopedClasses['page-title']} */ ;
 (__VLS_ctx.currentTitle);
 __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
     ...{ class: "header-right" },
 });
 /** @type {__VLS_StyleScopedClasses['header-right']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "admin-info" },
+});
+/** @type {__VLS_StyleScopedClasses['admin-info']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "admin-avatar" },
+});
+/** @type {__VLS_StyleScopedClasses['admin-avatar']} */ ;
 let __VLS_48;
 /** @ts-ignore @type {typeof __VLS_components.elDropdown | typeof __VLS_components.ElDropdown | typeof __VLS_components.elDropdown | typeof __VLS_components.ElDropdown} */
 elDropdown;
@@ -169,9 +208,9 @@ const __VLS_54 = ({ command: {} },
     { onCommand: (__VLS_ctx.handleCommand) });
 const { default: __VLS_55 } = __VLS_51.slots;
 __VLS_asFunctionalElement1(__VLS_intrinsics.span, __VLS_intrinsics.span)({
-    ...{ class: "el-dropdown-link" },
+    ...{ class: "admin-name" },
 });
-/** @type {__VLS_StyleScopedClasses['el-dropdown-link']} */ ;
+/** @type {__VLS_StyleScopedClasses['admin-name']} */ ;
 let __VLS_56;
 /** @ts-ignore @type {typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon | typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon} */
 elIcon;
@@ -213,6 +252,22 @@ var __VLS_59;
         command: "logout",
     }, ...__VLS_functionalComponentArgsRest(__VLS_75));
     const { default: __VLS_79 } = __VLS_77.slots;
+    let __VLS_80;
+    /** @ts-ignore @type {typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon | typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon} */
+    elIcon;
+    // @ts-ignore
+    const __VLS_81 = __VLS_asFunctionalComponent1(__VLS_80, new __VLS_80({}));
+    const __VLS_82 = __VLS_81({}, ...__VLS_functionalComponentArgsRest(__VLS_81));
+    const { default: __VLS_85 } = __VLS_83.slots;
+    let __VLS_86;
+    /** @ts-ignore @type {typeof __VLS_components.SwitchButton} */
+    SwitchButton;
+    // @ts-ignore
+    const __VLS_87 = __VLS_asFunctionalComponent1(__VLS_86, new __VLS_86({}));
+    const __VLS_88 = __VLS_87({}, ...__VLS_functionalComponentArgsRest(__VLS_87));
+    // @ts-ignore
+    [];
+    var __VLS_83;
     // @ts-ignore
     [];
     var __VLS_77;
@@ -229,55 +284,55 @@ var __VLS_52;
 // @ts-ignore
 [];
 var __VLS_45;
-let __VLS_80;
+let __VLS_91;
 /** @ts-ignore @type {typeof __VLS_components.elMain | typeof __VLS_components.ElMain | typeof __VLS_components.elMain | typeof __VLS_components.ElMain} */
 elMain;
 // @ts-ignore
-const __VLS_81 = __VLS_asFunctionalComponent1(__VLS_80, new __VLS_80({
+const __VLS_92 = __VLS_asFunctionalComponent1(__VLS_91, new __VLS_91({
     ...{ class: "main-content" },
 }));
-const __VLS_82 = __VLS_81({
+const __VLS_93 = __VLS_92({
     ...{ class: "main-content" },
-}, ...__VLS_functionalComponentArgsRest(__VLS_81));
+}, ...__VLS_functionalComponentArgsRest(__VLS_92));
 /** @type {__VLS_StyleScopedClasses['main-content']} */ ;
-const { default: __VLS_85 } = __VLS_83.slots;
-let __VLS_86;
+const { default: __VLS_96 } = __VLS_94.slots;
+let __VLS_97;
 /** @ts-ignore @type {typeof __VLS_components.routerView | typeof __VLS_components.RouterView | typeof __VLS_components.routerView | typeof __VLS_components.RouterView} */
 routerView;
 // @ts-ignore
-const __VLS_87 = __VLS_asFunctionalComponent1(__VLS_86, new __VLS_86({}));
-const __VLS_88 = __VLS_87({}, ...__VLS_functionalComponentArgsRest(__VLS_87));
+const __VLS_98 = __VLS_asFunctionalComponent1(__VLS_97, new __VLS_97({}));
+const __VLS_99 = __VLS_98({}, ...__VLS_functionalComponentArgsRest(__VLS_98));
 {
-    const { default: __VLS_91 } = __VLS_89.slots;
-    const [{ Component }] = __VLS_vSlot(__VLS_91);
-    let __VLS_92;
+    const { default: __VLS_102 } = __VLS_100.slots;
+    const [{ Component }] = __VLS_vSlot(__VLS_102);
+    let __VLS_103;
     /** @ts-ignore @type {typeof __VLS_components.transition | typeof __VLS_components.Transition | typeof __VLS_components.transition | typeof __VLS_components.Transition} */
     transition;
     // @ts-ignore
-    const __VLS_93 = __VLS_asFunctionalComponent1(__VLS_92, new __VLS_92({
-        name: "fade-transform",
+    const __VLS_104 = __VLS_asFunctionalComponent1(__VLS_103, new __VLS_103({
+        name: "fade-slide",
         mode: "out-in",
     }));
-    const __VLS_94 = __VLS_93({
-        name: "fade-transform",
+    const __VLS_105 = __VLS_104({
+        name: "fade-slide",
         mode: "out-in",
-    }, ...__VLS_functionalComponentArgsRest(__VLS_93));
-    const { default: __VLS_97 } = __VLS_95.slots;
-    const __VLS_98 = (Component);
+    }, ...__VLS_functionalComponentArgsRest(__VLS_104));
+    const { default: __VLS_108 } = __VLS_106.slots;
+    const __VLS_109 = (Component);
     // @ts-ignore
-    const __VLS_99 = __VLS_asFunctionalComponent1(__VLS_98, new __VLS_98({}));
-    const __VLS_100 = __VLS_99({}, ...__VLS_functionalComponentArgsRest(__VLS_99));
-    // @ts-ignore
-    [];
-    var __VLS_95;
+    const __VLS_110 = __VLS_asFunctionalComponent1(__VLS_109, new __VLS_109({}));
+    const __VLS_111 = __VLS_110({}, ...__VLS_functionalComponentArgsRest(__VLS_110));
     // @ts-ignore
     [];
-    __VLS_89.slots['' /* empty slot name completion */];
+    var __VLS_106;
+    // @ts-ignore
+    [];
+    __VLS_100.slots['' /* empty slot name completion */];
 }
-var __VLS_89;
+var __VLS_100;
 // @ts-ignore
 [];
-var __VLS_83;
+var __VLS_94;
 // @ts-ignore
 [];
 var __VLS_39;

@@ -51,6 +51,7 @@ const __VLS_ctx = {
 let __VLS_components;
 let __VLS_intrinsics;
 let __VLS_directives;
+/** @type {__VLS_StyleScopedClasses['el-table']} */ ;
 __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
     ...{ class: "reservation-flow-container" },
 });
@@ -101,11 +102,11 @@ const { default: __VLS_5 } = __VLS_3.slots;
     elOption;
     // @ts-ignore
     const __VLS_16 = __VLS_asFunctionalComponent1(__VLS_15, new __VLS_15({
-        label: "待签到 (活跃)",
+        label: "待签到",
         value: (0),
     }));
     const __VLS_17 = __VLS_16({
-        label: "待签到 (活跃)",
+        label: "待签到",
         value: (0),
     }, ...__VLS_functionalComponentArgsRest(__VLS_16));
     let __VLS_20;
@@ -113,11 +114,11 @@ const { default: __VLS_5 } = __VLS_3.slots;
     elOption;
     // @ts-ignore
     const __VLS_21 = __VLS_asFunctionalComponent1(__VLS_20, new __VLS_20({
-        label: "已正常签到 (活跃)",
+        label: "已签到",
         value: (1),
     }));
     const __VLS_22 = __VLS_21({
-        label: "已正常签到 (活跃)",
+        label: "已签到",
         value: (1),
     }, ...__VLS_functionalComponentArgsRest(__VLS_21));
     let __VLS_25;
@@ -125,11 +126,11 @@ const { default: __VLS_5 } = __VLS_3.slots;
     elOption;
     // @ts-ignore
     const __VLS_26 = __VLS_asFunctionalComponent1(__VLS_25, new __VLS_25({
-        label: "主动取消 (终止)",
+        label: "已取消",
         value: (2),
     }));
     const __VLS_27 = __VLS_26({
-        label: "主动取消 (终止)",
+        label: "已取消",
         value: (2),
     }, ...__VLS_functionalComponentArgsRest(__VLS_26));
     let __VLS_30;
@@ -137,11 +138,11 @@ const { default: __VLS_5 } = __VLS_3.slots;
     elOption;
     // @ts-ignore
     const __VLS_31 = __VLS_asFunctionalComponent1(__VLS_30, new __VLS_30({
-        label: "恶意违约漏签 (终止)",
+        label: "违约",
         value: (3),
     }));
     const __VLS_32 = __VLS_31({
-        label: "恶意违约漏签 (终止)",
+        label: "违约",
         value: (3),
     }, ...__VLS_functionalComponentArgsRest(__VLS_31));
     let __VLS_35;
@@ -149,11 +150,11 @@ const { default: __VLS_5 } = __VLS_3.slots;
     elOption;
     // @ts-ignore
     const __VLS_36 = __VLS_asFunctionalComponent1(__VLS_35, new __VLS_35({
-        label: "合规提前离开 (终止)",
+        label: "提前离开",
         value: (4),
     }));
     const __VLS_37 = __VLS_36({
-        label: "合规提前离开 (终止)",
+        label: "提前离开",
         value: (4),
     }, ...__VLS_functionalComponentArgsRest(__VLS_36));
     // @ts-ignore
@@ -185,32 +186,53 @@ elTableColumn;
 // @ts-ignore
 const __VLS_47 = __VLS_asFunctionalComponent1(__VLS_46, new __VLS_46({
     prop: "id",
-    label: "订单哈希码",
-    width: "100",
+    label: "订单号",
+    width: "80",
 }));
 const __VLS_48 = __VLS_47({
     prop: "id",
-    label: "订单哈希码",
-    width: "100",
+    label: "订单号",
+    width: "80",
 }, ...__VLS_functionalComponentArgsRest(__VLS_47));
 let __VLS_51;
 /** @ts-ignore @type {typeof __VLS_components.elTableColumn | typeof __VLS_components.ElTableColumn | typeof __VLS_components.elTableColumn | typeof __VLS_components.ElTableColumn} */
 elTableColumn;
 // @ts-ignore
 const __VLS_52 = __VLS_asFunctionalComponent1(__VLS_51, new __VLS_51({
-    label: "系统归属",
+    label: "预约学生",
     width: "180",
 }));
 const __VLS_53 = __VLS_52({
-    label: "系统归属",
+    label: "预约学生",
     width: "180",
 }, ...__VLS_functionalComponentArgsRest(__VLS_52));
 const { default: __VLS_56 } = __VLS_54.slots;
 {
     const { default: __VLS_57 } = __VLS_54.slots;
     const [scope] = __VLS_vSlot(__VLS_57);
-    (scope.row.userId);
-    __VLS_asFunctionalElement1(__VLS_intrinsics.br)({});
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "user-cell" },
+    });
+    /** @type {__VLS_StyleScopedClasses['user-cell']} */ ;
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "user-name" },
+    });
+    /** @type {__VLS_StyleScopedClasses['user-name']} */ ;
+    (scope.row.nickname || '未知用户');
+    if (scope.row.studentId) {
+        __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+            ...{ class: "user-sub" },
+        });
+        /** @type {__VLS_StyleScopedClasses['user-sub']} */ ;
+        (scope.row.studentId);
+    }
+    else {
+        __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+            ...{ class: "user-sub" },
+        });
+        /** @type {__VLS_StyleScopedClasses['user-sub']} */ ;
+        (scope.row.userId);
+    }
     // @ts-ignore
     [tableData, vLoading, loading,];
 }
@@ -222,19 +244,24 @@ let __VLS_58;
 elTableColumn;
 // @ts-ignore
 const __VLS_59 = __VLS_asFunctionalComponent1(__VLS_58, new __VLS_58({
-    label: "资源锚点",
-    width: "180",
+    label: "自习室 / 座位",
+    width: "200",
 }));
 const __VLS_60 = __VLS_59({
-    label: "资源锚点",
-    width: "180",
+    label: "自习室 / 座位",
+    width: "200",
 }, ...__VLS_functionalComponentArgsRest(__VLS_59));
 const { default: __VLS_63 } = __VLS_61.slots;
 {
     const { default: __VLS_64 } = __VLS_61.slots;
     const [scope] = __VLS_vSlot(__VLS_64);
-    (scope.row.roomId);
-    (scope.row.seatId);
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({});
+    (scope.row.roomName || ('房间 #' + scope.row.roomId));
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "user-sub" },
+    });
+    /** @type {__VLS_StyleScopedClasses['user-sub']} */ ;
+    (scope.row.seatNumber || ('#' + scope.row.seatId));
     // @ts-ignore
     [];
 }
@@ -247,12 +274,12 @@ elTableColumn;
 // @ts-ignore
 const __VLS_66 = __VLS_asFunctionalComponent1(__VLS_65, new __VLS_65({
     prop: "date",
-    label: "考勤公历",
+    label: "预约日期",
     width: "120",
 }));
 const __VLS_67 = __VLS_66({
     prop: "date",
-    label: "考勤公历",
+    label: "预约日期",
     width: "120",
 }, ...__VLS_functionalComponentArgsRest(__VLS_66));
 let __VLS_70;
@@ -260,12 +287,12 @@ let __VLS_70;
 elTableColumn;
 // @ts-ignore
 const __VLS_71 = __VLS_asFunctionalComponent1(__VLS_70, new __VLS_70({
-    label: "占用时段锁定",
-    width: "180",
+    label: "预约时段",
+    width: "160",
 }));
 const __VLS_72 = __VLS_71({
-    label: "占用时段锁定",
-    width: "180",
+    label: "预约时段",
+    width: "160",
 }, ...__VLS_functionalComponentArgsRest(__VLS_71));
 const { default: __VLS_75 } = __VLS_73.slots;
 {
@@ -300,12 +327,14 @@ let __VLS_83;
 elTableColumn;
 // @ts-ignore
 const __VLS_84 = __VLS_asFunctionalComponent1(__VLS_83, new __VLS_83({
-    label: "最终裁定状态",
+    label: "状态",
     align: "center",
+    width: "130",
 }));
 const __VLS_85 = __VLS_84({
-    label: "最终裁定状态",
+    label: "状态",
     align: "center",
+    width: "130",
 }, ...__VLS_functionalComponentArgsRest(__VLS_84));
 const { default: __VLS_88 } = __VLS_86.slots;
 {
@@ -404,18 +433,18 @@ let __VLS_120;
 elTableColumn;
 // @ts-ignore
 const __VLS_121 = __VLS_asFunctionalComponent1(__VLS_120, new __VLS_120({
-    label: "物理签到快照",
-    width: "180",
+    label: "签到时间",
+    width: "175",
 }));
 const __VLS_122 = __VLS_121({
-    label: "物理签到快照",
-    width: "180",
+    label: "签到时间",
+    width: "175",
 }, ...__VLS_functionalComponentArgsRest(__VLS_121));
 const { default: __VLS_125 } = __VLS_123.slots;
 {
     const { default: __VLS_126 } = __VLS_123.slots;
     const [scope] = __VLS_vSlot(__VLS_126);
-    (scope.row.checkinAt ? scope.row.checkinAt.replace('T', ' ') : '-- 未触发 --');
+    (scope.row.checkinAt ? scope.row.checkinAt.replace('T', ' ') : '—');
     // @ts-ignore
     [];
 }

@@ -28,6 +28,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'ReservationFlow',
         component: () => import('@/views/ReservationFlow.vue'),
         meta: { title: '订单流水监控', icon: 'Document' }
+      },
+      {
+        path: 'appeals',
+        name: 'AppealManage',
+        component: () => import('@/views/AppealManage.vue'),
+        meta: { title: '申诉管理', icon: 'Warning' }
       }
     ]
   }

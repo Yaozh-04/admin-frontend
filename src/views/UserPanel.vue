@@ -3,7 +3,7 @@
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
-          <span>学生信誉卷宗档案</span>
+          <span>学生信用管理</span>
           <el-input
             v-model="searchQuery"
             placeholder="搜索昵称/学号"
@@ -20,8 +20,7 @@
       </template>
       
       <el-table :data="tableData" v-loading="loading" style="width: 100%" border stripe>
-        <el-table-column prop="id" label="系统内码" width="100" />
-        <el-table-column prop="openid" label="微信 OpenID" show-overflow-tooltip />
+        <el-table-column prop="id" label="用户ID" width="80" />
         <el-table-column prop="studentId" label="绑定学号" width="150">
           <template #default="scope">
             {{ scope.row.studentId || '未绑定' }}
@@ -63,7 +62,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="createdAt" label="建立时间" width="180" />
+        <el-table-column prop="createdAt" label="注册时间" width="175" />
         <el-table-column label="操作" width="220" fixed="right" align="center">
           <template #default="scope">
             <el-button type="primary" size="small" @click="openEditDialog(scope.row)">
@@ -95,7 +94,7 @@
     </el-card>
 
     <!-- 弹窗 -->
-    <el-dialog v-model="dialogVisible" title="行政调控信誉分 (支持撤销违约扣分等申诉处理)" width="30%">
+    <el-dialog v-model="dialogVisible" title="调整信用分" width="30%">
       <el-form label-width="120px">
         <el-form-item label="学生昵称">
           <el-input v-model="currentUser.nickname" disabled />
@@ -180,7 +179,7 @@ const submitScoreChange = async () => {
     await request.put(`/admin/users/${currentUser.value.id}/credit`, {
       score: newScore.value
     })
-    ElMessage.success('积分行政调控生效')
+    ElMessage.success('信用分已更新')
     dialogVisible.value = false
     fetchData()
   } catch (err) {
@@ -208,10 +207,10 @@ const toggleStatus = async (row: any) => {
 
   try {
     await request.put(`/admin/users/${row.id}/status`, { status: newStatus })
-    ElMessage.success(`${actionName}操作落地成功`)
+    ElMessage.success(`${actionName}成功`)
     fetchData()
   } catch (err) {
-    ElMessage.error(`${actionName}实施受阻`)
+    ElMessage.error(`${actionName}失败，请重试`)
   }
 }
 
@@ -226,18 +225,37 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
 }
-.search-input {
-  width: 300px;
-}
+.search-input { width: 280px; }
 .pagination-block {
   margin-top: 20px;
   display: flex;
   justify-content: flex-end;
 }
+.user-cell { line-height: 1.7; }
+.user-name { font-weight: 500; color: #1a1f36; font-size: 14px; }
+.user-sub  { font-size: 12px; color: #8a94a6; }
 .note-text {
   font-size: 12px;
-  color: #909399;
+  color: #8a94a6;
   margin-top: 10px;
   margin-left: 120px;
 }
+/* 卡片全局层级覆盖 */
+:deep(.el-card) {
+  border-radius: 14px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+:deep(.el-card__header) {
+  padding: 18px 24px;
+  border-bottom: 1px solid #f0f2f5;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1f36;
+}
+:deep(.el-card__body) { padding: 0 24px 20px; }
+:deep(.el-table) { margin-top: 0; }
+:deep(.el-table th) { background: #f8f9fc !important; color: #5a6272; font-weight: 600; font-size: 13px; }
+:deep(.el-table td) { color: #1a1f36; }
+:deep(.el-button--small) { border-radius: 6px; }
 </style>

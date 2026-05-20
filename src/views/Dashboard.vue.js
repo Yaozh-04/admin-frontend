@@ -1,26 +1,72 @@
 /// <reference types="E:/project/StudyRoom/admin-frontend/node_modules/@vue/language-core/types/template-helpers.d.ts" />
 /// <reference types="E:/project/StudyRoom/admin-frontend/node_modules/@vue/language-core/types/props-fallback.d.ts" />
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import request from '@/utils/request';
 import { ElMessage } from 'element-plus';
 const stats = ref({
-    totalUsers: 0,
-    totalRooms: 0,
-    todayReservations: 0,
-    todayBreaches: 0
+    totalUsers: 0, totalRooms: 0, todayReservations: 0, todayBreaches: 0,
+    statusDistribution: [],
+    buildingDistribution: []
 });
+const statCards = [
+    { key: 'users', label: '注册学生', icon: 'User', gradient: 'linear-gradient(135deg,#4080ff,#6eb5ff)' },
+    { key: 'rooms', label: '自习室总数', icon: 'House', gradient: 'linear-gradient(135deg,#36b87f,#5de0a5)' },
+    { key: 'today', label: '今日预约', icon: 'Calendar', gradient: 'linear-gradient(135deg,#f5a623,#f7c76b)' },
+    { key: 'breach', label: '今日违约', icon: 'Warning', gradient: 'linear-gradient(135deg,#f45b5b,#ff8f8f)' },
+];
+const statValue = (key) => {
+    const map = {
+        users: stats.value.totalUsers,
+        rooms: stats.value.totalRooms,
+        today: stats.value.todayReservations,
+        breach: stats.value.todayBreaches,
+    };
+    return map[key] ?? 0;
+};
+const statusItems = [
+    { icon: 'CircleCheck', text: '座位防超卖机制（数据库行级锁）运行正常' },
+    { icon: 'CircleCheck', text: '自动违约巡检定时任务（每分钟）运行正常' },
+    { icon: 'CircleCheck', text: '信用分惩罚策略自动执行中' },
+    { icon: 'CircleCheck', text: '协同过滤推荐算法服务就绪' },
+];
 const loadStats = async () => {
     try {
         const res = await request.get('/admin/dashboard/stats');
         stats.value = res.data;
     }
-    catch (err) {
-        ElMessage.error('读取大盘数据失败');
+    catch {
+        ElMessage.error('读取数据失败');
     }
 };
-onMounted(() => {
-    loadStats();
+// ===== 图表计算逻辑 =====
+const pieColors = ['#f5a623', '#36b87f', '#a0aabf', '#f45b5b']; // 待签到黄, 已完成绿, 已取消灰, 已违约红
+const hasPieData = computed(() => {
+    const dist = stats.value.statusDistribution || [];
+    return dist.reduce((sum, item) => sum + item.value, 0) > 0;
 });
+const pieGradient = computed(() => {
+    const dist = stats.value.statusDistribution || [];
+    const total = dist.reduce((sum, item) => sum + item.value, 0);
+    if (total === 0)
+        return 'conic-gradient(#f0f2f5 0% 100%)'; // 无数据显示灰色圆
+    let currentAngle = 0;
+    let gradientStr = '';
+    dist.forEach((item, index) => {
+        if (item.value > 0) {
+            const percentage = (item.value / total) * 100;
+            gradientStr += `${pieColors[index]} ${currentAngle}% ${currentAngle + percentage}%, `;
+            currentAngle += percentage;
+        }
+    });
+    return `conic-gradient(${gradientStr.slice(0, -2)})`;
+});
+const maxBuildingValue = computed(() => {
+    const dist = stats.value.buildingDistribution || [];
+    if (dist.length === 0)
+        return 1;
+    return Math.max(...dist.map(i => i.value));
+});
+onMounted(loadStats);
 const __VLS_ctx = {
     ...{},
     ...{},
@@ -28,350 +74,242 @@ const __VLS_ctx = {
 let __VLS_components;
 let __VLS_intrinsics;
 let __VLS_directives;
-/** @type {__VLS_StyleScopedClasses['stat-icon']} */ ;
-/** @type {__VLS_StyleScopedClasses['stat-icon']} */ ;
-/** @type {__VLS_StyleScopedClasses['stat-icon']} */ ;
-/** @type {__VLS_StyleScopedClasses['stat-icon']} */ ;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "dashboard-container" },
-});
-/** @type {__VLS_StyleScopedClasses['dashboard-container']} */ ;
-let __VLS_0;
-/** @ts-ignore @type {typeof __VLS_components.elRow | typeof __VLS_components.ElRow | typeof __VLS_components.elRow | typeof __VLS_components.ElRow} */
-elRow;
-// @ts-ignore
-const __VLS_1 = __VLS_asFunctionalComponent1(__VLS_0, new __VLS_0({
-    gutter: (20),
-}));
-const __VLS_2 = __VLS_1({
-    gutter: (20),
-}, ...__VLS_functionalComponentArgsRest(__VLS_1));
-const { default: __VLS_5 } = __VLS_3.slots;
-let __VLS_6;
-/** @ts-ignore @type {typeof __VLS_components.elCol | typeof __VLS_components.ElCol | typeof __VLS_components.elCol | typeof __VLS_components.ElCol} */
-elCol;
-// @ts-ignore
-const __VLS_7 = __VLS_asFunctionalComponent1(__VLS_6, new __VLS_6({
-    span: (6),
-}));
-const __VLS_8 = __VLS_7({
-    span: (6),
-}, ...__VLS_functionalComponentArgsRest(__VLS_7));
-const { default: __VLS_11 } = __VLS_9.slots;
-let __VLS_12;
-/** @ts-ignore @type {typeof __VLS_components.elCard | typeof __VLS_components.ElCard | typeof __VLS_components.elCard | typeof __VLS_components.ElCard} */
-elCard;
-// @ts-ignore
-const __VLS_13 = __VLS_asFunctionalComponent1(__VLS_12, new __VLS_12({
-    ...{ class: "stat-card" },
-    shadow: "hover",
-}));
-const __VLS_14 = __VLS_13({
-    ...{ class: "stat-card" },
-    shadow: "hover",
-}, ...__VLS_functionalComponentArgsRest(__VLS_13));
 /** @type {__VLS_StyleScopedClasses['stat-card']} */ ;
-const { default: __VLS_17 } = __VLS_15.slots;
 __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-icon users" },
+    ...{ class: "dashboard" },
 });
-/** @type {__VLS_StyleScopedClasses['stat-icon']} */ ;
-/** @type {__VLS_StyleScopedClasses['users']} */ ;
-let __VLS_18;
-/** @ts-ignore @type {typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon | typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon} */
-elIcon;
-// @ts-ignore
-const __VLS_19 = __VLS_asFunctionalComponent1(__VLS_18, new __VLS_18({}));
-const __VLS_20 = __VLS_19({}, ...__VLS_functionalComponentArgsRest(__VLS_19));
-const { default: __VLS_23 } = __VLS_21.slots;
-let __VLS_24;
-/** @ts-ignore @type {typeof __VLS_components.User} */
-User;
-// @ts-ignore
-const __VLS_25 = __VLS_asFunctionalComponent1(__VLS_24, new __VLS_24({}));
-const __VLS_26 = __VLS_25({}, ...__VLS_functionalComponentArgsRest(__VLS_25));
-var __VLS_21;
+/** @type {__VLS_StyleScopedClasses['dashboard']} */ ;
 __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-info" },
+    ...{ class: "stat-grid" },
 });
-/** @type {__VLS_StyleScopedClasses['stat-info']} */ ;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-title" },
-});
-/** @type {__VLS_StyleScopedClasses['stat-title']} */ ;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-value" },
-});
-/** @type {__VLS_StyleScopedClasses['stat-value']} */ ;
-(__VLS_ctx.stats.totalUsers);
-// @ts-ignore
-[stats,];
-var __VLS_15;
-// @ts-ignore
-[];
-var __VLS_9;
-let __VLS_29;
-/** @ts-ignore @type {typeof __VLS_components.elCol | typeof __VLS_components.ElCol | typeof __VLS_components.elCol | typeof __VLS_components.ElCol} */
-elCol;
-// @ts-ignore
-const __VLS_30 = __VLS_asFunctionalComponent1(__VLS_29, new __VLS_29({
-    span: (6),
-}));
-const __VLS_31 = __VLS_30({
-    span: (6),
-}, ...__VLS_functionalComponentArgsRest(__VLS_30));
-const { default: __VLS_34 } = __VLS_32.slots;
-let __VLS_35;
-/** @ts-ignore @type {typeof __VLS_components.elCard | typeof __VLS_components.ElCard | typeof __VLS_components.elCard | typeof __VLS_components.ElCard} */
-elCard;
-// @ts-ignore
-const __VLS_36 = __VLS_asFunctionalComponent1(__VLS_35, new __VLS_35({
-    ...{ class: "stat-card" },
-    shadow: "hover",
-}));
-const __VLS_37 = __VLS_36({
-    ...{ class: "stat-card" },
-    shadow: "hover",
-}, ...__VLS_functionalComponentArgsRest(__VLS_36));
-/** @type {__VLS_StyleScopedClasses['stat-card']} */ ;
-const { default: __VLS_40 } = __VLS_38.slots;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-icon rooms" },
-});
-/** @type {__VLS_StyleScopedClasses['stat-icon']} */ ;
-/** @type {__VLS_StyleScopedClasses['rooms']} */ ;
-let __VLS_41;
-/** @ts-ignore @type {typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon | typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon} */
-elIcon;
-// @ts-ignore
-const __VLS_42 = __VLS_asFunctionalComponent1(__VLS_41, new __VLS_41({}));
-const __VLS_43 = __VLS_42({}, ...__VLS_functionalComponentArgsRest(__VLS_42));
-const { default: __VLS_46 } = __VLS_44.slots;
-let __VLS_47;
-/** @ts-ignore @type {typeof __VLS_components.House} */
-House;
-// @ts-ignore
-const __VLS_48 = __VLS_asFunctionalComponent1(__VLS_47, new __VLS_47({}));
-const __VLS_49 = __VLS_48({}, ...__VLS_functionalComponentArgsRest(__VLS_48));
-// @ts-ignore
-[];
-var __VLS_44;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-info" },
-});
-/** @type {__VLS_StyleScopedClasses['stat-info']} */ ;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-title" },
-});
-/** @type {__VLS_StyleScopedClasses['stat-title']} */ ;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-value" },
-});
-/** @type {__VLS_StyleScopedClasses['stat-value']} */ ;
-(__VLS_ctx.stats.totalRooms);
-// @ts-ignore
-[stats,];
-var __VLS_38;
-// @ts-ignore
-[];
-var __VLS_32;
-let __VLS_52;
-/** @ts-ignore @type {typeof __VLS_components.elCol | typeof __VLS_components.ElCol | typeof __VLS_components.elCol | typeof __VLS_components.ElCol} */
-elCol;
-// @ts-ignore
-const __VLS_53 = __VLS_asFunctionalComponent1(__VLS_52, new __VLS_52({
-    span: (6),
-}));
-const __VLS_54 = __VLS_53({
-    span: (6),
-}, ...__VLS_functionalComponentArgsRest(__VLS_53));
-const { default: __VLS_57 } = __VLS_55.slots;
-let __VLS_58;
-/** @ts-ignore @type {typeof __VLS_components.elCard | typeof __VLS_components.ElCard | typeof __VLS_components.elCard | typeof __VLS_components.ElCard} */
-elCard;
-// @ts-ignore
-const __VLS_59 = __VLS_asFunctionalComponent1(__VLS_58, new __VLS_58({
-    ...{ class: "stat-card" },
-    shadow: "hover",
-}));
-const __VLS_60 = __VLS_59({
-    ...{ class: "stat-card" },
-    shadow: "hover",
-}, ...__VLS_functionalComponentArgsRest(__VLS_59));
-/** @type {__VLS_StyleScopedClasses['stat-card']} */ ;
-const { default: __VLS_63 } = __VLS_61.slots;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-icon res" },
-});
-/** @type {__VLS_StyleScopedClasses['stat-icon']} */ ;
-/** @type {__VLS_StyleScopedClasses['res']} */ ;
-let __VLS_64;
-/** @ts-ignore @type {typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon | typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon} */
-elIcon;
-// @ts-ignore
-const __VLS_65 = __VLS_asFunctionalComponent1(__VLS_64, new __VLS_64({}));
-const __VLS_66 = __VLS_65({}, ...__VLS_functionalComponentArgsRest(__VLS_65));
-const { default: __VLS_69 } = __VLS_67.slots;
-let __VLS_70;
-/** @ts-ignore @type {typeof __VLS_components.Calendar} */
-Calendar;
-// @ts-ignore
-const __VLS_71 = __VLS_asFunctionalComponent1(__VLS_70, new __VLS_70({}));
-const __VLS_72 = __VLS_71({}, ...__VLS_functionalComponentArgsRest(__VLS_71));
-// @ts-ignore
-[];
-var __VLS_67;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-info" },
-});
-/** @type {__VLS_StyleScopedClasses['stat-info']} */ ;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-title" },
-});
-/** @type {__VLS_StyleScopedClasses['stat-title']} */ ;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-value" },
-});
-/** @type {__VLS_StyleScopedClasses['stat-value']} */ ;
-(__VLS_ctx.stats.todayReservations);
-// @ts-ignore
-[stats,];
-var __VLS_61;
-// @ts-ignore
-[];
-var __VLS_55;
-let __VLS_75;
-/** @ts-ignore @type {typeof __VLS_components.elCol | typeof __VLS_components.ElCol | typeof __VLS_components.elCol | typeof __VLS_components.ElCol} */
-elCol;
-// @ts-ignore
-const __VLS_76 = __VLS_asFunctionalComponent1(__VLS_75, new __VLS_75({
-    span: (6),
-}));
-const __VLS_77 = __VLS_76({
-    span: (6),
-}, ...__VLS_functionalComponentArgsRest(__VLS_76));
-const { default: __VLS_80 } = __VLS_78.slots;
-let __VLS_81;
-/** @ts-ignore @type {typeof __VLS_components.elCard | typeof __VLS_components.ElCard | typeof __VLS_components.elCard | typeof __VLS_components.ElCard} */
-elCard;
-// @ts-ignore
-const __VLS_82 = __VLS_asFunctionalComponent1(__VLS_81, new __VLS_81({
-    ...{ class: "stat-card" },
-    shadow: "hover",
-}));
-const __VLS_83 = __VLS_82({
-    ...{ class: "stat-card" },
-    shadow: "hover",
-}, ...__VLS_functionalComponentArgsRest(__VLS_82));
-/** @type {__VLS_StyleScopedClasses['stat-card']} */ ;
-const { default: __VLS_86 } = __VLS_84.slots;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-icon breaches" },
-});
-/** @type {__VLS_StyleScopedClasses['stat-icon']} */ ;
-/** @type {__VLS_StyleScopedClasses['breaches']} */ ;
-let __VLS_87;
-/** @ts-ignore @type {typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon | typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon} */
-elIcon;
-// @ts-ignore
-const __VLS_88 = __VLS_asFunctionalComponent1(__VLS_87, new __VLS_87({}));
-const __VLS_89 = __VLS_88({}, ...__VLS_functionalComponentArgsRest(__VLS_88));
-const { default: __VLS_92 } = __VLS_90.slots;
-let __VLS_93;
-/** @ts-ignore @type {typeof __VLS_components.Warning} */
-Warning;
-// @ts-ignore
-const __VLS_94 = __VLS_asFunctionalComponent1(__VLS_93, new __VLS_93({}));
-const __VLS_95 = __VLS_94({}, ...__VLS_functionalComponentArgsRest(__VLS_94));
-// @ts-ignore
-[];
-var __VLS_90;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-info" },
-});
-/** @type {__VLS_StyleScopedClasses['stat-info']} */ ;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-title" },
-});
-/** @type {__VLS_StyleScopedClasses['stat-title']} */ ;
-__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-    ...{ class: "stat-value" },
-    ...{ class: ({ 'text-danger': __VLS_ctx.stats.todayBreaches > 0 }) },
-});
-/** @type {__VLS_StyleScopedClasses['stat-value']} */ ;
-/** @type {__VLS_StyleScopedClasses['text-danger']} */ ;
-(__VLS_ctx.stats.todayBreaches);
-// @ts-ignore
-[stats, stats,];
-var __VLS_84;
-// @ts-ignore
-[];
-var __VLS_78;
-// @ts-ignore
-[];
-var __VLS_3;
-let __VLS_98;
-/** @ts-ignore @type {typeof __VLS_components.elRow | typeof __VLS_components.ElRow | typeof __VLS_components.elRow | typeof __VLS_components.ElRow} */
-elRow;
-// @ts-ignore
-const __VLS_99 = __VLS_asFunctionalComponent1(__VLS_98, new __VLS_98({
-    ...{ style: {} },
-}));
-const __VLS_100 = __VLS_99({
-    ...{ style: {} },
-}, ...__VLS_functionalComponentArgsRest(__VLS_99));
-const { default: __VLS_103 } = __VLS_101.slots;
-let __VLS_104;
-/** @ts-ignore @type {typeof __VLS_components.elCol | typeof __VLS_components.ElCol | typeof __VLS_components.elCol | typeof __VLS_components.ElCol} */
-elCol;
-// @ts-ignore
-const __VLS_105 = __VLS_asFunctionalComponent1(__VLS_104, new __VLS_104({
-    span: (24),
-}));
-const __VLS_106 = __VLS_105({
-    span: (24),
-}, ...__VLS_functionalComponentArgsRest(__VLS_105));
-const { default: __VLS_109 } = __VLS_107.slots;
-let __VLS_110;
-/** @ts-ignore @type {typeof __VLS_components.elCard | typeof __VLS_components.ElCard | typeof __VLS_components.elCard | typeof __VLS_components.ElCard} */
-elCard;
-// @ts-ignore
-const __VLS_111 = __VLS_asFunctionalComponent1(__VLS_110, new __VLS_110({
-    shadow: "never",
-}));
-const __VLS_112 = __VLS_111({
-    shadow: "never",
-}, ...__VLS_functionalComponentArgsRest(__VLS_111));
-const { default: __VLS_115 } = __VLS_113.slots;
-{
-    const { header: __VLS_116 } = __VLS_113.slots;
+/** @type {__VLS_StyleScopedClasses['stat-grid']} */ ;
+for (const [card] of __VLS_vFor((__VLS_ctx.statCards))) {
     __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
-        ...{ class: "card-header" },
+        ...{ class: "stat-card" },
+        key: (card.key),
     });
-    /** @type {__VLS_StyleScopedClasses['card-header']} */ ;
-    __VLS_asFunctionalElement1(__VLS_intrinsics.span, __VLS_intrinsics.span)({});
+    /** @type {__VLS_StyleScopedClasses['stat-card']} */ ;
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "stat-icon-wrap" },
+        ...{ style: ({ background: card.gradient }) },
+    });
+    /** @type {__VLS_StyleScopedClasses['stat-icon-wrap']} */ ;
+    let __VLS_0;
+    /** @ts-ignore @type {typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon | typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon} */
+    elIcon;
+    // @ts-ignore
+    const __VLS_1 = __VLS_asFunctionalComponent1(__VLS_0, new __VLS_0({
+        size: (22),
+    }));
+    const __VLS_2 = __VLS_1({
+        size: (22),
+    }, ...__VLS_functionalComponentArgsRest(__VLS_1));
+    const { default: __VLS_5 } = __VLS_3.slots;
+    const __VLS_6 = (card.icon);
+    // @ts-ignore
+    const __VLS_7 = __VLS_asFunctionalComponent1(__VLS_6, new __VLS_6({}));
+    const __VLS_8 = __VLS_7({}, ...__VLS_functionalComponentArgsRest(__VLS_7));
+    // @ts-ignore
+    [statCards,];
+    var __VLS_3;
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "stat-body" },
+    });
+    /** @type {__VLS_StyleScopedClasses['stat-body']} */ ;
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "stat-label" },
+    });
+    /** @type {__VLS_StyleScopedClasses['stat-label']} */ ;
+    (card.label);
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "stat-value" },
+        ...{ class: ({ 'value-danger': card.key === 'breach' && __VLS_ctx.stats.todayBreaches > 0 }) },
+    });
+    /** @type {__VLS_StyleScopedClasses['stat-value']} */ ;
+    /** @type {__VLS_StyleScopedClasses['value-danger']} */ ;
+    (__VLS_ctx.statValue(card.key));
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "stat-decor" },
+        ...{ style: ({ background: card.gradient }) },
+    });
+    /** @type {__VLS_StyleScopedClasses['stat-decor']} */ ;
+    // @ts-ignore
+    [stats, statValue,];
+}
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "status-card" },
+});
+/** @type {__VLS_StyleScopedClasses['status-card']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "status-header" },
+});
+/** @type {__VLS_StyleScopedClasses['status-header']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "status-dot" },
+});
+/** @type {__VLS_StyleScopedClasses['status-dot']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.span, __VLS_intrinsics.span)({
+    ...{ class: "status-title" },
+});
+/** @type {__VLS_StyleScopedClasses['status-title']} */ ;
+let __VLS_11;
+/** @ts-ignore @type {typeof __VLS_components.elTag | typeof __VLS_components.ElTag | typeof __VLS_components.elTag | typeof __VLS_components.ElTag} */
+elTag;
+// @ts-ignore
+const __VLS_12 = __VLS_asFunctionalComponent1(__VLS_11, new __VLS_11({
+    type: "success",
+    size: "small",
+    effect: "light",
+    ...{ style: {} },
+}));
+const __VLS_13 = __VLS_12({
+    type: "success",
+    size: "small",
+    effect: "light",
+    ...{ style: {} },
+}, ...__VLS_functionalComponentArgsRest(__VLS_12));
+const { default: __VLS_16 } = __VLS_14.slots;
+// @ts-ignore
+[];
+var __VLS_14;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "status-items" },
+});
+/** @type {__VLS_StyleScopedClasses['status-items']} */ ;
+for (const [item] of __VLS_vFor((__VLS_ctx.statusItems))) {
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "status-item" },
+        key: (item.text),
+    });
+    /** @type {__VLS_StyleScopedClasses['status-item']} */ ;
+    let __VLS_17;
+    /** @ts-ignore @type {typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon | typeof __VLS_components.elIcon | typeof __VLS_components.ElIcon} */
+    elIcon;
+    // @ts-ignore
+    const __VLS_18 = __VLS_asFunctionalComponent1(__VLS_17, new __VLS_17({
+        ...{ class: "status-icon" },
+    }));
+    const __VLS_19 = __VLS_18({
+        ...{ class: "status-icon" },
+    }, ...__VLS_functionalComponentArgsRest(__VLS_18));
+    /** @type {__VLS_StyleScopedClasses['status-icon']} */ ;
+    const { default: __VLS_22 } = __VLS_20.slots;
+    const __VLS_23 = (item.icon);
+    // @ts-ignore
+    const __VLS_24 = __VLS_asFunctionalComponent1(__VLS_23, new __VLS_23({}));
+    const __VLS_25 = __VLS_24({}, ...__VLS_functionalComponentArgsRest(__VLS_24));
+    // @ts-ignore
+    [statusItems,];
+    var __VLS_20;
+    __VLS_asFunctionalElement1(__VLS_intrinsics.span, __VLS_intrinsics.span)({
+        ...{ class: "status-text" },
+    });
+    /** @type {__VLS_StyleScopedClasses['status-text']} */ ;
+    (item.text);
     // @ts-ignore
     [];
 }
-let __VLS_117;
-/** @ts-ignore @type {typeof __VLS_components.elEmpty | typeof __VLS_components.ElEmpty} */
-elEmpty;
-// @ts-ignore
-const __VLS_118 = __VLS_asFunctionalComponent1(__VLS_117, new __VLS_117({
-    description: "当前运行正常，各项自动化任务（含防超卖、自动违约轮询）监控中...",
-}));
-const __VLS_119 = __VLS_118({
-    description: "当前运行正常，各项自动化任务（含防超卖、自动违约轮询）监控中...",
-}, ...__VLS_functionalComponentArgsRest(__VLS_118));
-// @ts-ignore
-[];
-var __VLS_113;
-// @ts-ignore
-[];
-var __VLS_107;
-// @ts-ignore
-[];
-var __VLS_101;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "chart-grid" },
+});
+/** @type {__VLS_StyleScopedClasses['chart-grid']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "chart-card" },
+});
+/** @type {__VLS_StyleScopedClasses['chart-card']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "chart-title" },
+});
+/** @type {__VLS_StyleScopedClasses['chart-title']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "chart-body pie-chart-body" },
+});
+/** @type {__VLS_StyleScopedClasses['chart-body']} */ ;
+/** @type {__VLS_StyleScopedClasses['pie-chart-body']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "pie-chart" },
+    ...{ style: ({ background: __VLS_ctx.pieGradient }) },
+});
+/** @type {__VLS_StyleScopedClasses['pie-chart']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "pie-legend" },
+});
+/** @type {__VLS_StyleScopedClasses['pie-legend']} */ ;
+for (const [item, index] of __VLS_vFor((__VLS_ctx.stats.statusDistribution))) {
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "legend-item" },
+        key: (item.name),
+    });
+    /** @type {__VLS_StyleScopedClasses['legend-item']} */ ;
+    __VLS_asFunctionalElement1(__VLS_intrinsics.span, __VLS_intrinsics.span)({
+        ...{ class: "legend-dot" },
+        ...{ style: ({ background: __VLS_ctx.pieColors[index] }) },
+    });
+    /** @type {__VLS_StyleScopedClasses['legend-dot']} */ ;
+    __VLS_asFunctionalElement1(__VLS_intrinsics.span, __VLS_intrinsics.span)({
+        ...{ class: "legend-name" },
+    });
+    /** @type {__VLS_StyleScopedClasses['legend-name']} */ ;
+    (item.name);
+    __VLS_asFunctionalElement1(__VLS_intrinsics.span, __VLS_intrinsics.span)({
+        ...{ class: "legend-val" },
+    });
+    /** @type {__VLS_StyleScopedClasses['legend-val']} */ ;
+    (item.value);
+    // @ts-ignore
+    [stats, pieGradient, pieColors,];
+}
+if (!__VLS_ctx.hasPieData) {
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "empty-hint" },
+    });
+    /** @type {__VLS_StyleScopedClasses['empty-hint']} */ ;
+}
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "chart-card" },
+});
+/** @type {__VLS_StyleScopedClasses['chart-card']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "chart-title" },
+});
+/** @type {__VLS_StyleScopedClasses['chart-title']} */ ;
+__VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+    ...{ class: "chart-body bar-chart-body" },
+});
+/** @type {__VLS_StyleScopedClasses['chart-body']} */ ;
+/** @type {__VLS_StyleScopedClasses['bar-chart-body']} */ ;
+for (const [item] of __VLS_vFor((__VLS_ctx.stats.buildingDistribution))) {
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "bar-item" },
+        key: (item.name),
+    });
+    /** @type {__VLS_StyleScopedClasses['bar-item']} */ ;
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "bar-info" },
+    });
+    /** @type {__VLS_StyleScopedClasses['bar-info']} */ ;
+    __VLS_asFunctionalElement1(__VLS_intrinsics.span, __VLS_intrinsics.span)({
+        ...{ class: "bar-name" },
+    });
+    /** @type {__VLS_StyleScopedClasses['bar-name']} */ ;
+    (item.name);
+    __VLS_asFunctionalElement1(__VLS_intrinsics.span, __VLS_intrinsics.span)({
+        ...{ class: "bar-val" },
+    });
+    /** @type {__VLS_StyleScopedClasses['bar-val']} */ ;
+    (item.value);
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "bar-track" },
+    });
+    /** @type {__VLS_StyleScopedClasses['bar-track']} */ ;
+    __VLS_asFunctionalElement1(__VLS_intrinsics.div, __VLS_intrinsics.div)({
+        ...{ class: "bar-fill" },
+        ...{ style: ({ width: (item.value / __VLS_ctx.maxBuildingValue * 100) + '%' }) },
+    });
+    /** @type {__VLS_StyleScopedClasses['bar-fill']} */ ;
+    // @ts-ignore
+    [stats, hasPieData, maxBuildingValue,];
+}
 // @ts-ignore
 [];
 const __VLS_export = (await import('vue')).defineComponent({});
